@@ -1,0 +1,70 @@
+# Gardenia alpha stack — pre-built images from Docker Hub.
+# Quick start: cp .env.alpha.example .env.alpha && docker compose -f docker-compose.alpha.yml up -d
+
+name: gardenia-alpha
+
+services:
+  postgres:
+    image: postgres:16-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-gardenia}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-gardenia}
+      POSTGRES_DB: ${POSTGRES_DB:-gardenia_db}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", 'pg_isready -U "$$POSTGRES_USER" -d "$$POSTGRES_DB"']
+      interval: 5s
+      timeout: 5s
+      retries: 10
+      start_period: 10s
+
+  api:
+    image: sisqueslabs/gardenia-api:alpha
+    restart: unless-stopped
+    depends_on:
+      postgres:
+        condition: service_healthy
+    healthcheck:
+      test:
+        [
+          "CMD-SHELL",
+          "wget -qO/dev/null http://localhost:3000/api 2>&1 || exit 1",
+        ]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 20s
+    ports:
+      - "${API_PORT:-3000}:3000"
+    environment:
+      PORT: 3000
+      HOSTNAME: 0.0.0.0
+      # Not production so refresh-token cookies work over local HTTP.
+      NODE_ENV: development
+      LOG_LEVEL: ${LOG_LEVEL:-info}
+      DATABASE_DRIVER: postgres
+      DATABASE_HOST: postgres
+      DATABASE_PORT: 5432
+      DATABASE_USERNAME: ${POSTGRES_USER:-gardenia}
+      DATABASE_PASSWORD: ${POSTGRES_PASSWORD:-gardenia}
+      DATABASE_DATABASE: ${POSTGRES_DB:-gardenia_db}
+      # Alpha local stack only — applies schema without running TypeORM CLI in the image.
+      DATABASE_SYNCHRONIZE: ${DATABASE_SYNCHRONIZE:-true}
+      JWT_SECRET: ${JWT_SECRET:-change-me-gardenia-alpha}
+      JWT_EXPIRES_IN: ${JWT_EXPIRES_IN:-7d}
+      REFRESH_TOKEN_TTL_DAYS: ${REFRESH_TOKEN_TTL_DAYS:-30}
+      REFRESH_COOKIE_NAME: ${REFRESH_COOKIE_NAME:-refresh_token}
+
+  web:
+    image: sisqueslabs/gardenia-web:alpha
+    restart: unless-stopped
+    depends_on:
+      api:
+        condition: service_healthy
+    ports:
+      - "${WEB_PORT:-8080}:80"
+
+volumes:
+  postgres_data:
