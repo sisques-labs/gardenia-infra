@@ -58,7 +58,7 @@ services:
       REFRESH_TOKEN_TTL_DAYS: ${REFRESH_TOKEN_TTL_DAYS:-30}
       REFRESH_COOKIE_NAME: ${REFRESH_COOKIE_NAME:-refresh_token}
       # Frontend base URL for plant QR deep links
-      QR_BASE_URL: ${QR_BASE_URL:-http://localhost:3000}
+      QR_BASE_URL: ${QR_BASE_URL:-http://localhost:8080}
 
   web:
     image: sisqueslabs/gardenia-web:alpha
