@@ -12,7 +12,7 @@ Runs the published **alpha** images from Docker Hub:
 | Web      | `sisqueslabs/gardenia-web:alpha`  | http://localhost:8080     |
 | Postgres | `postgres:16-alpine`          | internal only               |
 
-The alpha web image is built with `apiUrl: http://localhost:3000/api`, which matches the default API port mapping.
+The alpha web image is a **Next.js** standalone server (container port **3000**, mapped to host `WEB_PORT`, default 8080). Build it with `NEXT_PUBLIC_API_URL=http://localhost:3000/api` and `NEXT_PUBLIC_GRAPHQL_URL=http://localhost:3000/graphql` so the browser can reach the API on the host-mapped port (see `.env.alpha.example`).
 
 ### Quick start
 
