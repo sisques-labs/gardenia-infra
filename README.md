@@ -12,7 +12,7 @@ Runs the published **alpha** images from Docker Hub:
 | Web      | `sisqueslabs/gardenia-web:alpha`  | http://localhost:8080     |
 | Postgres | `postgres:16-alpine`          | internal only               |
 
-The alpha web image is a **Next.js** standalone server (container port **3000**, mapped to host `WEB_PORT`, default 8080). Build it with `NEXT_PUBLIC_API_URL=http://localhost:3000/api` and `NEXT_PUBLIC_GRAPHQL_URL=http://localhost:3000/graphql` so the browser can reach the API on the host-mapped port (see `.env.alpha.example`).
+The alpha web image is a **Next.js** standalone server (container port **3000**, mapped to host `WEB_PORT`, default 8080). Configure `NEXT_PUBLIC_API_URL` and `NEXT_PUBLIC_GRAPHQL_URL` in `.env.alpha` (defaults in `.env.alpha.example`); compose passes them to the web service like the API env block. When publishing `sisqueslabs/gardenia-web:alpha`, pass the same values as Docker build args so client bundles match.
 
 ### Quick start
 
@@ -35,6 +35,7 @@ docker compose -f docker-compose.alpha.yml --env-file .env.alpha down -v   # als
 - **`DATABASE_SYNCHRONIZE=true`** is enabled by default so the API can create the schema without a migration step inside the slim runtime image. Turn it off in `.env.alpha` if you manage schema with TypeORM migrations instead. Requires an API image that honours this env var (see [gardenia-api `postgres.config`](https://github.com/sisques-labs/gardenia-api/blob/main/src/core/config/postgres.config.ts)).
 - **`NODE_ENV=development`** is set on the API service so HTTP refresh cookies work locally (the image defaults to `production`, which sets `Secure` cookies).
 - Change **`JWT_SECRET`** (and Postgres credentials) before exposing this stack beyond your machine.
+- **`NEXT_PUBLIC_*`** must point at URLs the browser can reach (typically `http://localhost:${API_PORT}/api` and `.../graphql`). If you change `API_PORT`, update both web vars and rebuild the web image.
 
 ### Image requirements
 
