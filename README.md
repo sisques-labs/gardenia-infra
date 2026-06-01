@@ -40,3 +40,14 @@ docker compose -f docker-compose.alpha.yml --env-file .env.alpha down -v   # als
 ### Image requirements
 
 The API runtime image must ship production `node_modules` (Nest webpack keeps packages like `@nestjs/core` external). If `sisqueslabs/gardenia-api:alpha` crashes with `Cannot find module '@nestjs/core'`, publish a new alpha build from an updated [gardenia-api Dockerfile](https://github.com/sisques-labs/gardenia-api/blob/main/Dockerfile).
+
+## AWS (Terraform)
+
+Deploys **RDS** (PostgreSQL), **S3** (assets), and **EC2** running API + web via `docker-compose.ec2.yml` (no containerized Postgres).
+
+| File | Purpose |
+| ---- | ------- |
+| `terraform/` | VPC, security groups, RDS, S3, EC2, Elastic IP |
+| `docker-compose.ec2.yml` | API + web for the EC2 host |
+
+See [terraform/README.md](./terraform/README.md) for `terraform init` / `apply` and outputs (`web_url`, `api_url`, credentials).

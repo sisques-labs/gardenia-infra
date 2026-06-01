@@ -1,0 +1,18 @@
+project_name = "gardenia"
+environment  = "alpha"
+aws_region   = "eu-west-1"
+
+ec2_instance_type = "t3.small"
+rds_instance_class = "db.t4g.micro"
+
+api_port = 3000
+web_port = 80
+
+# Optional: restrict SSH to your IP (leave empty to disable port 22)
+# allowed_ssh_cidr = "203.0.113.10/32"
+
+# Production: keep false and run TypeORM migrations
+database_synchronize = false
+
+# Optional — auto-generated when omitted
+# jwt_secret = "change-me"
