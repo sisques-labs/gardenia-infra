@@ -51,8 +51,6 @@ services:
       DATABASE_USERNAME: ${POSTGRES_USER:-gardenia}
       DATABASE_PASSWORD: ${POSTGRES_PASSWORD:-gardenia}
       DATABASE_DATABASE: ${POSTGRES_DB:-gardenia_db}
-      # Runs pending TypeORM migrations on startup (safe for single-instance deployments).
-      DATABASE_MIGRATIONS_RUN: ${DATABASE_MIGRATIONS_RUN:-true}
       JWT_SECRET: ${JWT_SECRET:-change-me-gardenia-alpha}
       JWT_EXPIRES_IN: ${JWT_EXPIRES_IN:-7d}
       REFRESH_TOKEN_TTL_DAYS: ${REFRESH_TOKEN_TTL_DAYS:-30}
